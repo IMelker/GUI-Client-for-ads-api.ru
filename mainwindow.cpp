@@ -66,6 +66,7 @@ void MainWindow::SetupConfigs() {
     if(configs_.contains("city")) {
         ui->cb_city->setChecked(true);
         SetupCheckedInList(configs_["city"], ui->list_city);
+        ui->le_city->setText(configs_["le_city"]);
     }
     if(configs_.contains("person_type")) {
         ui->cb_person_type->setChecked(true);
@@ -148,19 +149,20 @@ void MainWindow::SaveCurrentParameters() {
         configs_["test_account"] = "test_account";
     }
     if(ui->cb_categories->isChecked()) {
-        configs_["categories"] = GetCheckedAsCSV(ui->list_categories, ",", false);
+        configs_["categories"] = GetCheckedAsCSV(ui->list_categories, ",", GetCheckedType::kListId);
     }
     if(ui->cb_source->isChecked()) {
         configs_["source"] = QString::number(ui->cb_source_2->currentIndex());
     }
     if(ui->cb_city->isChecked()) {
-        configs_["city"] = GetCheckedAsCSV(ui->list_city, ",", false);
+        configs_["city"] = GetCheckedAsCSV(ui->list_city, ",", GetCheckedType::kListId);
+        configs_["le_city"] = ui->le_city->text();
     }
     if(ui->cb_person_type->isChecked()) {
-        configs_["person_type"] = GetCheckedAsCSV(ui->list_person_type, ",", false);
+        configs_["person_type"] = GetCheckedAsCSV(ui->list_person_type, ",", GetCheckedType::kListId);
     }
     if(ui->cb_nedvigimost_type->isChecked()) {
-        configs_["nedvigimost_type"] = GetCheckedAsCSV(ui->list_nedvigimost_type, ",", false);
+        configs_["nedvigimost_type"] = GetCheckedAsCSV(ui->list_nedvigimost_type, ",", GetCheckedType::kListId);
     }
     if(ui->cb_q->isChecked()) {
         configs_["q"] = ui->le_q->text();
@@ -183,7 +185,7 @@ void MainWindow::SaveCurrentParameters() {
     if(ui->cb_limit->isChecked()) {
         configs_["limit"] = QString::number(ui->sb_limit->value());
     }
-    configs_["out"] = GetCheckedAsCSV(ui->list_out, ",", false);
+    configs_["out"] = GetCheckedAsCSV(ui->list_out, ",", GetCheckedType::kListId);
 
     QFile file_out(QCoreApplication::applicationDirPath() + "/config.ini");
     QString config_content = "";
@@ -251,7 +253,7 @@ void MainWindow::SendQuery() {
         QNetworkRequest request(url);
         debugRequest(request);
         QNetworkReply *reply = manager.get(request);
-        LogMessage("Получаем ответ от сервера.");
+        LogMessage("Получаем ответ от сервера.", kLogColorGray);
         while(!reply->isFinished()) {
             qApp->processEvents();
         }
@@ -271,7 +273,7 @@ void MainWindow::SendQuery() {
 
     if(parts_count_>0) {
         LogMessage("Результаты сохранены в файл: " + file_path_, kLogColorGreen);
-        LogMessage("Всего строк: " + QString::number(bulletin_sum_) + ", в " + QString::number(parts_count_) + " частях.", kLogColorGreen);
+        LogMessage("Всего строк: " + QString::number(bulletin_sum_) + ", в " + QString::number(parts_count_) + " частях.", kLogColorGray);
     }
 
     last_bulletin_count_ = 0;
@@ -290,7 +292,7 @@ void MainWindow::StopRun() {
 }
 
 bool MainWindow::FormQuery(QUrlQuery* query) {
-    LogMessage("Подготовка запроса объявлений по заданным параметрам.");
+    LogMessage("Подготовка запроса объявлений по заданным параметрам.", kLogColorGreen);
     const QString& user_name = ui->le_user->text();
     if(user_name.isEmpty() ||  ui->le_token->text().isEmpty()) {
         QMessageBox::critical(this,"Ошибка","Заполните параметры пользователя.");
@@ -312,30 +314,32 @@ bool MainWindow::FormQuery(QUrlQuery* query) {
         dir.mkpath(file_path_);
     }
 
+    file_path_+= "o" + QString::number(GetCheckedCount(ui->list_out));
+
     if(ui->cb_categories->isChecked()) {
-        QString cats = GetCheckedAsCSV(ui->list_categories, ",");
-        file_path_+="c" + cats;
+        QString cats = GetCheckedAsCSV(ui->list_categories, ",", GetCheckedType::kToolTip);
+        file_path_+="_cat" + cats;
         query->addQueryItem("category_id", cats);
     }
     if(ui->cb_q->isChecked()) {
-        file_path_+="q" + ui->le_q->text();
+        file_path_+="_q" + ui->le_q->text();
         query->addQueryItem("q", ui->le_q->text());
     }
     if(ui->cb_price->isChecked()) {
         QString price1 = QString::number(ui->sb_price1->value());
         QString price2 = QString::number(ui->sb_price2->value());
-        file_path_+="p" + price1 + "-" + price2;
+        file_path_+="_p" + price1 + "-" + price2;
         query->addQueryItem("price1", price1);
         query->addQueryItem("price2", price2);
     }
 
     if(ui->cb_date1->isChecked()) {
-        file_path_+="d1" + ui->date_date1->dateTime().toString("yyyy-MM-dd_hh.mm.ss");
+        file_path_+="_d1" + ui->date_date1->dateTime().toString("yyyy-MM-dd_hh.mm.ss");
         query->addQueryItem("date1", ui->date_date1->dateTime().toString("yyyy-MM-dd hh:mm:ss"));
         serf_by_date_ = true;
     }
     if(ui->cb_date2->isChecked()) {
-        file_path_+="d2" + ui->date_date2->dateTime().toString("yyyy-MM-dd_hh.mm.ss");
+        file_path_+="_d2" + ui->date_date2->dateTime().toString("yyyy-MM-dd_hh.mm.ss");
         query->addQueryItem("date2", ui->date_date2->dateTime().toString("yyyy-MM-dd hh:mm:ss"));
         serf_by_date_ = true;
     }
@@ -344,31 +348,33 @@ bool MainWindow::FormQuery(QUrlQuery* query) {
         serf_by_date_ = false;
     }
     if(ui->cb_person_type->isChecked()) {
-        QString pt = GetCheckedAsCSV(ui->list_person_type, ",");
-        file_path_+="pt" + pt;
+        QString pt = GetCheckedAsCSV(ui->list_person_type, ",", GetCheckedType::kToolTip);
+        file_path_+="_pt" + pt;
         query->addQueryItem("person_type", pt);
     }
     if(ui->cb_city->isChecked()) {
-        QString regions = GetCheckedAsCSV(ui->list_city, "|");
-        file_path_ += "r" + regions;
-        query->addQueryItem("city", GetCheckedAsCSV(ui->list_city, regions));
+        QString regions = GetCheckedAsCSV(ui->list_city, ",", GetCheckedType::kListId);
+        file_path_ += "_c" + regions + (ui->le_city->text().isEmpty() ? "" : ("," + ui->le_city->text()));
+        regions = GetCheckedAsCSV(ui->list_city, "|", GetCheckedType::kName)  + (ui->le_city->text().isEmpty() ? "" : ("|" + ui->le_city->text()));
+        query->addQueryItem("city", regions);
+
     }
     if(ui->cb_nedvigimost_type->isChecked()) {
-        QString nt = GetCheckedAsCSV(ui->list_nedvigimost_type, ",");
-        file_path_ += "nt" + nt;
-        query->addQueryItem("nedvigimost_type", GetCheckedAsCSV(ui->list_nedvigimost_type, ","));
+        QString nt = GetCheckedAsCSV(ui->list_nedvigimost_type, ",", GetCheckedType::kToolTip);
+        file_path_ += "_nt" + nt;
+        query->addQueryItem("nedvigimost_type", nt);
     }
     if(ui->cb_phone->isChecked()) {
         query->addQueryItem("phone", ui->le_phone->text());
     }
     if(ui->cb_source->isChecked()) {
         QString source = QString::number(ui->cb_source_2->currentIndex()+1);
-        file_path_ += "s" + source;
+        file_path_ += "_s" + source;
         query->addQueryItem("source", source);
     }
     query->addQueryItem("limit", QString::number(kLimitPerQuery));
 
-    file_path_+= "o" + QString::number(GetCheckedCount(ui->list_out)) + ".csv";
+    file_path_+= ".csv";
     return true;
 }
 
@@ -378,10 +384,25 @@ void MainWindow::SetDisabledWhileRun(bool disable) {
     ui->pb_stop->setEnabled(disable);
 }
 
-QString MainWindow::GetCheckedAsCSV(QListWidget* list, const QString& del, bool use_tooltip) {
+QString MainWindow::GetCheckedAsCSV(QListWidget* list, const QString& del, GetCheckedType get_type) {
     QString value = "";
 
-    if(use_tooltip) {
+    switch (get_type) {
+    case GetCheckedType::kListId:
+    {
+        for(int row = 0; row < list->count(); row++)
+        {
+            if(list->item(row)->checkState() == Qt::Checked) {
+                if(!value.isEmpty()) {
+                    value += del;
+                }
+                value += QString::number(row);
+            }
+        }
+        break;
+    }
+    case GetCheckedType::kToolTip:
+    {
         for(int row = 0; row < list->count(); row++)
         {
             const auto& item = list->item(row);
@@ -392,18 +413,25 @@ QString MainWindow::GetCheckedAsCSV(QListWidget* list, const QString& del, bool 
                 value += item->toolTip();
             }
         }
-    } else {
+        break;
+    }
+    case GetCheckedType::kName:
+    {
         for(int row = 0; row < list->count(); row++)
         {
-            if(list->item(row)->checkState() == Qt::Checked) {
+            const auto& item = list->item(row);
+            if(item->checkState() == Qt::Checked) {
                 if(!value.isEmpty()) {
                     value += del;
                 }
-                value += QString::number(row);
+                value += item->text();
             }
         }
+        break;
     }
-
+    default:
+        break;
+    }
     return value;
 }
 
@@ -489,7 +517,7 @@ void MainWindow::HandleResponse(const QJsonDocument& response){
             return;
         }
 
-        LogMessage("Обработка и запись " + QString::number(parts_count_+1) + " части(всего " + QString::number(bulletin_sum_) + " строк) в *.csv файл.");
+        LogMessage("Обработка и запись " + QString::number(parts_count_+1) + " части(всего " + QString::number(bulletin_sum_) + " строк) в *.csv файл.", kLogColorGray);
         qDebug() << QString(response.toJson(QJsonDocument::Compact));
         qDebug() << file_path_;
         QFile file_out(file_path_);
@@ -573,11 +601,7 @@ void MainWindow::JSONArrayToText(const QJsonArray& array, QString& value, const 
 }
 
 void  MainWindow::LogMessage(const QString& msg, QString color){
-    if(color.isEmpty()){
-        ui->text_logs->append(msg);
-    } else {
-        ui->text_logs->append("<span style=\" color:" + color + ";\">" + msg +  "</span>");
-    }
+    ui->text_logs->append("<span style=\" color:" + color + ";\">" + msg +  "</span>");
 }
 
 void  MainWindow::ChangeDefaultLimit(bool is_test_account) {

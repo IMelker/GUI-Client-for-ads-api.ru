@@ -1,4 +1,4 @@
-# GUI Client for ads-api.ru
+﻿# GUI Client for ads-api.ru
 Qt Project for ads-api.ru. (bulletin board parser)
 
 Разрабатывалось для Windows под собственные нужды, но ввиду кросплатформенности Qt легко переносится и на другие системы.
@@ -6,7 +6,7 @@ Qt Project for ads-api.ru. (bulletin board parser)
 ## Интерфейс программы представлен на скриншоте
 ![alt text](https://github.com/IMelker/GUI-Client-for-ads-api.ru/blob/master/interface.png?raw=true)
 
-Скачать скомпилированные исходники можно по ссылке: [скачать скомпилированную программу](https://yadi.sk/d/gBRA1FEi3W4M9f)
+Скачать скомпилированные исходники можно по ссылке: [скачать скомпилированную программу](https://yadi.sk/d/yPSt5fTT3W4brD)
 
 ## Описание работы
 Для пользования клиентом необходимо зарегистрироваться на сайте [ads-api.ru](http://ads-api.ru/) и получить token.

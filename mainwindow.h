@@ -15,6 +15,8 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+    enum GetCheckedType{kListId, kToolTip, kName};
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -27,12 +29,12 @@ private:
 
     bool FormQuery(QUrlQuery* query);
     void HandleResponse(const QJsonDocument& response);
-    QString GetCheckedAsCSV(QListWidget* list, const QString& del, bool use_tooltip = true);
+    QString GetCheckedAsCSV(QListWidget* list, const QString& del, GetCheckedType get_type);
     QStringList GetCheckedList(QListWidget* list);
     int GetCheckedCount(QListWidget* list);
     void JSONArrayToText(const QJsonArray& array, QString& value, const QString& del = ",");
     void ClearStringFromTrash(QString& data);
-    void LogMessage(const QString& msg, QString color = "");
+    void LogMessage(const QString& msg, QString color);
 
 
     Ui::MainWindow *ui;

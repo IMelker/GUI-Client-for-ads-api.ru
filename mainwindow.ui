@@ -978,7 +978,7 @@
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Helvetica Neue,Helvetica,Arial,sans-serif'; font-size:14px; color:#333333; background-color:#ffffff;&quot;&gt;Название города или области или региона.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="text">
-              <string>Регионы</string>
+              <string>Регионы и города</string>
              </property>
             </widget>
            </item>
@@ -1846,6 +1846,20 @@
                <enum>Unchecked</enum>
               </property>
              </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Города(перечислить через '|')</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="le_city">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
             </widget>
            </item>
           </layout>
@@ -3088,22 +3102,6 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>cb_city</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>list_city</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>389</x>
-     <y>127</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>318</x>
-     <y>336</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>cb_source</sender>
    <signal>toggled(bool)</signal>
    <receiver>cb_source_2</receiver>
@@ -3132,6 +3130,38 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>639</x>
      <y>254</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_city</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>list_city</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>389</x>
+     <y>127</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>318</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_city</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>le_city</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>361</x>
+     <y>122</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>352</x>
+     <y>530</y>
     </hint>
    </hints>
   </connection>
