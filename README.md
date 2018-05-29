@@ -6,7 +6,7 @@ Qt Project for ads-api.ru. (bulletin board parser)
 ## Интерфейс программы представлен на скриншоте
 ![alt text](https://github.com/IMelker/GUI-Client-for-ads-api.ru/blob/master/interface.png?raw=true)
 
-Скачать скомпилированные исходники можно по ссылке: [скачать скомпилированную программу](https://yadi.sk/d/5JE3eE393W4i5m)
+Скачать скомпилированные исходники можно по ссылке: [скачать скомпилированную программу](https://yadi.sk/d/0_1QVJJW3Wezef)
 
 ## Описание работы
 Для пользования клиентом необходимо зарегистрироваться на сайте [ads-api.ru](http://ads-api.ru/) и получить token.

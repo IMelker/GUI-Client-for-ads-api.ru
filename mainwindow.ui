@@ -883,7 +883,7 @@
         </widget>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,1">
+        <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,0,0">
          <property name="spacing">
           <number>3</number>
          </property>
@@ -1867,12 +1867,45 @@
            <item>
             <widget class="QLabel" name="label_4">
              <property name="text">
-              <string>Города(перечислить через '|')</string>
+              <string>Свои города и регионы(перечислить через '|')</string>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QLineEdit" name="le_city">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_11">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QCheckBox" name="cb_metro">
+             <property name="text">
+              <string>Метро(только одно значение)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="le_metro">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -3176,8 +3209,24 @@ p, li { white-space: pre-wrap; }
      <y>122</y>
     </hint>
     <hint type="destinationlabel">
-     <x>352</x>
-     <y>530</y>
+     <x>505</x>
+     <y>499</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_metro</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>le_metro</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>289</x>
+     <y>508</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>288</x>
+     <y>537</y>
     </hint>
    </hints>
   </connection>

@@ -70,6 +70,10 @@ void MainWindow::SetupConfigs() {
         SetupCheckedInList(configs_["city"], ui_->list_city);
         ui_->le_city->setText(configs_["le_city"]);
     }
+    if(configs_.contains("metro")) {
+        ui_->cb_metro->setChecked(true);
+        ui_->le_metro->setText(configs_["metro"]);
+    }
     if(configs_.contains("person_type")) {
         ui_->cb_person_type->setChecked(true);
         SetupCheckedInList(configs_["person_type"], ui_->list_person_type);
@@ -159,6 +163,9 @@ void MainWindow::SaveCurrentParameters() {
     if(ui_->cb_city->isChecked()) {
         configs_["city"] = GetCheckedAsCSV(ui_->list_city, ",", GetCheckedType::kListId);
         configs_["le_city"] = ui_->le_city->text();
+    }
+    if(ui_->cb_metro->isChecked()) {
+        configs_["metro"] = ui_->le_metro->text();
     }
     if(ui_->cb_person_type->isChecked()) {
         configs_["person_type"] = GetCheckedAsCSV(ui_->list_person_type, ",", GetCheckedType::kListId);
@@ -360,6 +367,10 @@ bool MainWindow::FormQuery(QUrlQuery* query) {
         regions = GetCheckedAsCSV(ui_->list_city, "|", GetCheckedType::kName)  + (ui_->le_city->text().isEmpty() ? "" : ("|" + ui_->le_city->text()));
         query->addQueryItem("city", regions);
 
+    }
+    if(ui_->cb_metro->isChecked()) {
+        file_path_+="_m" + ui_->le_metro->text();
+        query->addQueryItem("metro", ui_->le_metro->text());
     }
     if(ui_->cb_nedvigimost_type->isChecked()) {
         QString nt = GetCheckedAsCSV(ui_->list_nedvigimost_type, ",", GetCheckedType::kToolTip);
